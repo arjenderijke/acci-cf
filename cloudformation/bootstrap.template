@@ -1,0 +1,30 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "S3 bucket for deploying cookbook",
+
+  "Parameters" : {
+
+    "BucketName": {
+      "Description" : "Name for S3 bucket to store cookbook tarball",
+      "Type": "String",
+      "ConstraintDescription" : "Must be a valid name for a S3 bucket."
+    }
+  },
+
+  "Resources" : {
+    "CookbookBucket" : {
+      "Type" : "AWS::S3::Bucket",
+      "Properties" : {
+        "BucketName" : { "Ref" : "BucketName" }
+      }
+    }
+  },
+
+  "Outputs" : {
+    "Bucket" : {
+      "Value" : { "Ref" : "CookbookBucket" }
+    }
+  }
+
+}
