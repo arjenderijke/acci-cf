@@ -83,25 +83,6 @@
         }
       }
     },
-    "appJenkins1": {
-      "Type": "AWS::OpsWorks::App",
-      "Properties": {
-        "Name": "Jenkins",
-        "Shortname": "jenkins",
-        "Type": "other",
-        "StackId": {
-          "Ref": "JenkinsStack"
-        },
-        "AppSource": {
-          "Type": "archive",
-          "Url": "http://mirrors.jenkins-ci.org/war/latest/jenkins.war"
-        },
-        "Attributes": {
-          "AutoBundleOnDeploy": "true",
-          "AwsFlowRubySettings": "{}"
-        }
-      }
-    },
     "layerJenkinsServer": {
       "Type": "AWS::OpsWorks::Layer",
       "Properties": {
@@ -130,7 +111,7 @@
         ]
       },
       "DependsOn": [
-        "appJenkins1", "layerJenkinsSlave"
+        "layerJenkinsSlave"
       ]
     },
     "layerJenkinsSlave": {
