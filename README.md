@@ -43,14 +43,14 @@ After a change in the custom cookbook of the stack, the cookbook should be packa
 
 	aws --region us-east-1 opsworks create-deployment \
 	    --stack-id $(aws opsworks --region us-east-1 describe-stacks \
-	        --query 'Stacks[?Name==`FirstStack`].[StackId]' --output text) \
+	        --query 'Stacks[?Name==`JenkinsStack`].[StackId]' --output text) \
 	    --command "{\"Name\":\"update_custom_cookbooks\"}"
 
 When the deployment is finished, execute the custom recipies using the following command:
 
 	aws --region us-east-1 opsworks create-deployment \
 		--stack-id $(aws opsworks --region us-east-1 describe-stacks \
-			--query 'Stacks[?Name==`FirstStack`].[StackId]' --output text) \
+			--query 'Stacks[?Name==`JenkinsStack`].[StackId]' --output text) \
 		--command "{\"Name\":\"configure\"}"
 
 # Cleanup
