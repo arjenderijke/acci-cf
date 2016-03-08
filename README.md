@@ -40,12 +40,14 @@ This will return a json document if the template is correct.
 ## Chef cookbook
 
 After a change in the custom cookbook of the stack, the cookbook should be packaged using the "berks" command and upload to the S3 bucket. After that, the new cookbook can be uploaded to the instances, using the following command:
+
 	aws --region us-east-1 opsworks create-deployment \
 	    --stack-id $(aws opsworks --region us-east-1 describe-stacks \
 	        --query 'Stacks[?Name==`FirstStack`].[StackId]' --output text) \
 	    --command "{\"Name\":\"update_custom_cookbooks\"}"
 
 When the deployment is finished, execute the custom recipies using the following command:
+
 	aws --region us-east-1 opsworks create-deployment \
 		--stack-id $(aws opsworks --region us-east-1 describe-stacks \
 			--query 'Stacks[?Name==`FirstStack`].[StackId]' --output text) \
