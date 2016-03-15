@@ -31,6 +31,13 @@
       "ConstraintDescription" : "Must be a valid email address"
     },
 
+    "DomainName": {
+      "Description" : "Domainname for email",
+      "Type": "String",
+      "Default": "example.com",
+      "ConstraintDescription" : "Must be a domainname that you own"
+    },
+
     "SSHLocation" : {
       "Description" : "The IP address range that can be used to SSH to the EC2 instances",
       "Type": "String",
@@ -69,7 +76,8 @@
           ":role/aws-opsworks-service-role" ]] },
         "CustomJson" : {
           "secretsfilename" : { "Ref" : "SecretsFileName" },
-          "replytoaddress" : { "Ref" : "ReplyToAddress" }
+          "replytoaddress" : { "Ref" : "ReplyToAddress" },
+          "domainname" : { "Ref" : "DomainName" }
         },
         "UseCustomCookbooks": "true",
         "CustomCookbooksSource" : {
