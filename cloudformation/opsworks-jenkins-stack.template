@@ -68,7 +68,8 @@
           { "Ref" : "AWS::AccountId" },
           ":role/aws-opsworks-service-role" ]] },
         "CustomJson" : {
-          "secretsfilename" : { "Ref" : "SecretsFileName" }
+          "secretsfilename" : { "Ref" : "SecretsFileName" },
+          "replytoaddress" : { "Ref" : "ReplyToAddress" }
         },
         "UseCustomCookbooks": "true",
         "CustomCookbooksSource" : {
@@ -95,9 +96,6 @@
       "Properties": {
         "AutoAssignElasticIps": "false",
         "AutoAssignPublicIps": "true",
-        "CustomJson" : {
-          "replytoaddress" : { "Ref" : "ReplyToAddress" }
-        },
         "EnableAutoHealing": "true",
         "Name": "Jenkins Server",
         "Shortname": "jenkinsserver",

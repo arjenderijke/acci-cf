@@ -21,10 +21,11 @@ This template is used to start an opsworks stack for setting up a jenkins server
     aws cloudformation create-stack --stack-name opsworks-jenkins \
 		--template-body file://.//cloudformation//opsworks-jenkins-stack.template \
 		--parameters ParameterKey=BucketName,ParameterValue="cookbook-bucket" \
+		    ParameterKey=ReplyToAddress,ParameterValue="me@example.com", \
 			ParameterKey=KeyName,ParameterValue="aws_user_key" \
 			ParameterKey="CookBookFile",ParameterValue="cookbooks.tar.gz"
 
-The "BucketName" parameter points to the bucket that is created with the "bootstrap" template. The "Keyname" parameter is the name of a ssh keypair, used to login to the created instances. The "CookBookFile" parameter is the name of the file of the custom Chef cookbook, used to configure the stacks instances. This tarball should be upload to the S3 bucket before creating the stack.
+The "BucketName" parameter points to the bucket that is created with the "bootstrap" template. The "ReplyToAddress" is the email address that is used to configure the reply-to setting in the jenkins mailer plugin. The "Keyname" parameter is the name of a ssh keypair, used to login to the created instances. The "CookBookFile" parameter is the name of the file of the custom Chef cookbook, used to configure the stacks instances. This tarball should be upload to the S3 bucket before creating the stack.
 
 ## Smtp
 
