@@ -24,6 +24,13 @@
       "ConstraintDescription" : "must be the name tar.gz file that contains a chef cookbook"
     },
 
+    "ReplyToAddress": {
+      "Description" : "Reply to email address in jenkins mailer plugin",
+      "Type": "String",
+      "Default": "unknown@example.com",
+      "ConstraintDescription" : "Must be a valid email address"
+    },
+
     "SSHLocation" : {
       "Description" : "The IP address range that can be used to SSH to the EC2 instances",
       "Type": "String",
@@ -88,6 +95,9 @@
       "Properties": {
         "AutoAssignElasticIps": "false",
         "AutoAssignPublicIps": "true",
+        "CustomJson" : {
+          "replytoaddress" : { "Ref" : "ReplyToAddress" }
+        },
         "EnableAutoHealing": "true",
         "Name": "Jenkins Server",
         "Shortname": "jenkinsserver",
