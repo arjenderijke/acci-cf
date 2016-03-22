@@ -57,6 +57,21 @@
     }
   },
 
+  "Mappings" : {
+    "RegionMap" : {
+      "us-east-1"      : { "smtp" : "email-smtp.us-east-1.amazonaws.com"},
+      "us-west-2"      : { "smtp" : "email-smtp.us-west-2.amazonaws.com"},
+      "us-west-1"      : { "smtp" : "email-smtp.us-east-1.amazonaws.com"},
+      "eu-west-1"      : { "smtp" : "email-smtp.eu-west-1.amazonaws.com"},
+      "eu-central-1"   : { "smtp" : "email-smtp.eu-west-1.amazonaws.com"},
+      "ap-southeast-1" : { "smtp" : "email-smtp.us-east-1.amazonaws.com"},
+      "ap-northeast-1" : { "smtp" : "email-smtp.us-east-1.amazonaws.com"},
+      "ap-southeast-2" : { "smtp" : "email-smtp.us-east-1.amazonaws.com"},
+      "ap-northeast-2" : { "smtp" : "email-smtp.us-east-1.amazonaws.com"},
+      "sa-east-1"      : { "smtp" : "email-smtp.us-east-1.amazonaws.com"}
+    }
+  },
+
   "Resources": {
     "JenkinsStack": {
       "Type": "AWS::OpsWorks::Stack",
@@ -77,7 +92,8 @@
         "CustomJson" : {
           "secretsfilename" : { "Ref" : "SecretsFileName" },
           "replytoaddress" : { "Ref" : "ReplyToAddress" },
-          "domainname" : { "Ref" : "DomainName" }
+          "domainname" : { "Ref" : "DomainName" },
+	  "smtphostname" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "smtp"]}
         },
         "UseCustomCookbooks": "true",
         "CustomCookbooksSource" : {
