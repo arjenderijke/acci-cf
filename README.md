@@ -14,6 +14,12 @@ The first template is used to bootstrap the Astrocompute CI environment. Go into
 
 Make sure the bucketname is unique, see http://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html
 
+## Smtp
+
+You need to setup your account to enable sending emails through the Amazon SES service. This has to be done manually in the AWS console. First go to the SES service and choose "Email Addresses". Then select the "Verify a new Email Address" option. Here you verify the email address that you want to use for the "ReplyToAddress" parameter and the "recipients" value in the secrets.json file.
+
+The next step is to get the credentials for sending email through the smtp service. Go to the SMTP settings option and select "Create My SMTP Credentials". There you will create a new IAM user. There you get the opportunity to get the required credentials. Add these to the secrets.json file.
+
 ## opsworks-jenkins
 
 This template is used to start an opsworks stack for setting up a jenkins server and some jenkins slaves:
@@ -27,8 +33,6 @@ This template is used to start an opsworks stack for setting up a jenkins server
 			ParameterKey="CookBookFile",ParameterValue="cookbooks.tar.gz"
 
 The "BucketName" parameter points to the bucket that is created with the "bootstrap" template. The "DomainName" parameter is used for setting up the default suffix setting of the jenkins mailer plugin and CNAME record of the jenkins server. This must be a domainname that you control. The "ReplyToAddress" is the email address that is used to configure the reply-to setting in the jenkins mailer plugin. The "Keyname" parameter is the name of a ssh keypair, used to login to the created instances. The "CookBookFile" parameter is the name of the file of the custom Chef cookbook, used to configure the stacks instances. This tarball should be upload to the S3 bucket before creating the stack.
-
-## Smtp
 
 # Development
 
