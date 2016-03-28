@@ -41,6 +41,13 @@
       "ConstraintDescription" : "Must be a domainname that you own"
     },
 
+    "ServerAlias": {
+      "Description" : "CNAME for the ELB pointing to the jenkins server",
+      "Type": "String",
+      "Default": "jenkins",
+      "ConstraintDescription" : "must be a valid hostname"
+    },
+
     "SSHLocation" : {
       "Description" : "The IP address range that can be used to SSH to the EC2 instances",
       "Type": "String",
@@ -334,8 +341,30 @@
           "CidrIp": "0.0.0.0/0"
         } ]
       }
-    }
+    },
 
+    "ElbCname" : {
+      "Type" : "AWS::Route53::RecordSet",
+      "Properties" : {
+         "HostedZoneName" : {
+            "Fn::Join" : [ "", [
+               { "Ref" : "DomainName" }, "."
+            ] ]
+         },
+         "Comment" : "CNAME for ELB instance.",
+         "Name" : {
+            "Fn::Join" : [ "", [
+               {"Ref" : "ServerAlias" }, ".",
+               {"Ref" : "DomainName" } ,"."
+            ] ]
+         },
+         "Type" : "CNAME",
+         "TTL" : "900",
+         "ResourceRecords" : [
+            { "Fn::GetAtt" : [ "ELB", "DNSName" ] }
+         ]
+      }
+    }
   },
 
   "Outputs": {
