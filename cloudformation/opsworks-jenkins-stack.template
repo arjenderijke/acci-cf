@@ -1,5 +1,8 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
+
+  "Description": "test with opsworks installing jenkins",
+
   "Parameters" : {
     "BucketName" : {
       "Description" : "The EC2 Bucket",
@@ -54,7 +57,14 @@
       "Default" : "t2.small",
       "AllowedValues" : [ "t1.micro", "t2.micro", "t2.small", "t2.medium", "m1.small", "m1.medium", "m1.large", "m1.xlarge", "m2.xlarge", "m2.2xlarge", "m2.4xlarge", "m3.medium", "m3.large", "m3.xlarge", "m3.2xlarge", "c1.medium", "c1.xlarge", "c3.large", "c3.xlarge", "c3.2xlarge", "c3.4xlarge", "c3.8xlarge", "c4.large", "c4.xlarge", "c4.2xlarge", "c4.4xlarge", "c4.8xlarge", "g2.2xlarge", "r3.large", "r3.xlarge", "r3.2xlarge", "r3.4xlarge", "r3.8xlarge", "i2.xlarge", "i2.2xlarge", "i2.4xlarge", "i2.8xlarge", "d2.xlarge", "d2.2xlarge", "d2.4xlarge", "d2.8xlarge", "hi1.4xlarge", "hs1.8xlarge", "cr1.8xlarge", "cc2.8xlarge", "cg1.4xlarge"],
       "ConstraintDescription" : "must be a valid EC2 instance type."
+    },
+
+    "VpcId": {
+      "Description" : "Name of default VPC id",
+      "Type": "AWS::EC2::VPC::Id",
+      "ConstraintDescription" : "must be the id of the default vpc."
     }
+
   },
 
   "Mappings" : {
@@ -139,7 +149,7 @@
           ]
         },
         "CustomSecurityGroupIds" : [
-          { "Fn::GetAtt" : [ "JenkinsInstanceSecurityGroup", "GroupId" ]}
+          { "Fn::GetAtt" : [ "JenkinsServerSecurityGroup", "GroupId" ]}
         ]
       },
       "DependsOn": [
@@ -231,6 +241,36 @@
         "JenkinsAmznSlaveInstance"
       ]
     },
+
+    "ELB": {
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+      "Properties": {
+        "CrossZone" : "true",
+        "SecurityGroups": [ { "Ref": "ELBSecurityGroup" } ],
+        "AvailabilityZones": { "Fn::GetAZs" : "" },
+        "Listeners": [ {
+          "LoadBalancerPort": "80",
+          "InstancePort": "8080",
+          "Protocol": "HTTP"
+        } ],
+        "HealthCheck": {
+          "Target": "HTTP:8080/",
+          "HealthyThreshold": "3",
+          "UnhealthyThreshold": "5",
+          "Interval": "90",
+          "Timeout": "60"
+        }
+      }
+    },
+
+    "ELBAttachment": {
+      "Type": "AWS::OpsWorks::ElasticLoadBalancerAttachment",
+      "Properties": {
+        "ElasticLoadBalancerName": { "Ref": "ELB" },
+        "LayerId": { "Ref": "layerJenkinsServer" }
+      }
+    },
+
     "s3policyjenkinschef": {
       "Type": "AWS::S3::BucketPolicy",
       "Properties": {
@@ -262,19 +302,50 @@
         }
       }
     },
-    "JenkinsInstanceSecurityGroup" : {
-      "Type" : "AWS::EC2::SecurityGroup",
-      "Properties" : {
-        "GroupDescription" : "Enable HTTP access on the inbound port",
-        "SecurityGroupIngress" : [ {
-          "IpProtocol" : "tcp",
-          "FromPort" : "8080",
-          "ToPort" : "8080",
-          "CidrIp" : { "Ref" : "SSHLocation"}
+
+    "JenkinsServerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription" : "Allow inbound requests from the ELB to the OpsWorks instances",
+        "SecurityGroupIngress": [
+          { "IpProtocol": "tcp",
+	    "FromPort": "8080",
+	    "ToPort": "8080",
+	    "SourceSecurityGroupId": { "Ref": "ELBSecurityGroup" } }
+        ]
+      }
+    },
+
+    "ELBSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription" : "Allow inbound access to the ELB",
+	"VpcId": { "Ref" : "VpcId" },
+        "SecurityGroupIngress": [ {
+          "IpProtocol": "tcp",
+          "FromPort": "80",
+          "ToPort": "80",
+          "CidrIp": { "Ref" : "SSHLocation"}
+        } ],
+        "SecurityGroupEgress": [ {
+          "IpProtocol": "tcp",
+          "FromPort": "8080",
+          "ToPort": "8080",
+          "CidrIp": "0.0.0.0/0"
         } ]
       }
     }
+
   },
 
-  "Description": "test with opsworks installing jenkins"
+  "Outputs": {
+    "StackId": {
+      "Description": "Stack Id of newly created OpsWorks stack",
+      "Value": { "Ref": "JenkinsStack" }
+    },
+    "URL": {
+      "Description" : "URL for newly created application",
+      "Value" : { "Fn::Join" : ["", ["http://", { "Fn::GetAtt" : [ "ELB", "DNSName" ]}]] }
+    }
+  }
 }
