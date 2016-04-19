@@ -27,11 +27,11 @@ This template is used to start an opsworks stack for setting up a jenkins server
     aws cloudformation create-stack --stack-name opsworks-jenkins \
 		--template-body file://.//cloudformation//opsworks-jenkins-stack.template \
 		--parameters ParameterKey=BucketName,ParameterValue="cookbook-bucket" \
-		    ParameterKey=DomainName,ParameterValue="example.com", \
-		    ParameterKey=ServerAlias,ParameterValue="jenkins", \
-		    ParameterKey=ReplyToAddress,ParameterValue="me@example.com", \
-			ParameterKey=KeyName,ParameterValue="aws_user_key", \
-			ParameterKey="CookBookFile",ParameterValue="cookbooks.tar.gz", \
+		    ParameterKey=DomainName,ParameterValue="example.com" \
+		    ParameterKey=ServerAlias,ParameterValue="jenkins" \
+		    ParameterKey=ReplyToAddress,ParameterValue="me@example.com" \
+			ParameterKey=KeyName,ParameterValue="aws_user_key" \
+			ParameterKey="CookBookFile",ParameterValue="cookbooks.tar.gz" \
 		    ParameterKey=VpcId,ParameterValue="vpc-abcd1234"
 
 The "BucketName" parameter points to the bucket that is created with the "bootstrap" template. The "DomainName" parameter is used for setting up the default suffix setting of the jenkins mailer plugin and CNAME record of the jenkins server. This must be a domainname that you control. The "ReplyToAddress" is the email address that is used to configure the reply-to setting in the jenkins mailer plugin.
