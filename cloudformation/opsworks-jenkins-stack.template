@@ -109,6 +109,7 @@
         "CustomJson" : {
           "secretsfilename" : { "Ref" : "SecretsFileName" },
           "replytoaddress" : { "Ref" : "ReplyToAddress" },
+          "serveralias" : { "Ref" : "ServerAlias" },
           "domainname" : { "Ref" : "DomainName" },
 	  "smtphostname" : { "Fn::FindInMap" : [ "RegionMap", { "Ref" : "AWS::Region" }, "smtp"]}
         },
